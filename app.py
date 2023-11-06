@@ -209,5 +209,5 @@ def view_index():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=int(os.getenv('PORT')))
+    app.run(debug=True)
 
