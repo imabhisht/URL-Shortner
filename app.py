@@ -150,6 +150,15 @@ def index():
 def stats():
     return render_template('stats.html')
 
+@app.route('/checkip')
+def checkIPAddress():
+    return {
+        "x": request.environ['REMOTE_ADDR'],
+        "y": request.environ.get('HTTP_X_FORWARDED_FOR'),
+        "z": request.remote_addr
+    }
+
+
 
 @app.route('/get-all', methods=['GET'])
 def get_all():
