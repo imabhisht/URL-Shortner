@@ -5,4 +5,3 @@ Requests
 SQLAlchemy
 gunicorn
 pymysql
-```
