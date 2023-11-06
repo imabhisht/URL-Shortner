@@ -44,7 +44,7 @@ function addRowsToTable(data) {
 
 async function fetchListOfAllData() {
     try {
-        const response = await fetch('http://127.0.0.1:5078/get-all');
+        const response = await fetch(`${baseURL}/get-all`);
         if (response.ok) {
             const data = await response.json();
             // Process the data here
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         // This example just alerts the entered URL
         alert("Entered URL: " + url);
 
-        const apiUrl = 'http://127.0.0.1:5078/shorten';
+        const apiUrl = `${baseURL}/shorten`;
         const requestData = {
             url: url
         };

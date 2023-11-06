@@ -40,7 +40,7 @@ function populateTable(data) {
   
 async function fetchListOfAllData(code) {
     try {
-        const response = await fetch(`http://127.0.0.1:5078/${code}/stats`);
+        const response = await fetch(`${baseURL}/${code}/stats`);
 
         if (response.ok) {
             const data = await response.json();
@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         // This example just alerts the entered URL
         alert("Entered URL: " + url);
 
-        const apiUrl = 'http://127.0.0.1:5078/shorten';
+        const apiUrl =`${baseURL}/shorten`;
         const requestData = {
             url: url
         };
