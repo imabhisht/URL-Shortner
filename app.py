@@ -152,10 +152,18 @@ def stats():
 
 @app.route('/checkip')
 def checkIPAddress():
+    ip_address = ""
+    if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+        ip_address = request.environ['REMOTE_ADDR']
+    else:
+        ip_adddress_x = request.environ['HTTP_X_FORWARDED_FOR']
+        ip_address = ip_adddress_x.split(',')[0]
+
     return {
         "x": request.environ['REMOTE_ADDR'],
         "y": request.environ.get('HTTP_X_FORWARDED_FOR'),
-        "z": request.remote_addr
+        "z": request.remote_addr,
+        "ip": ip_address
     }
 
 
@@ -187,6 +195,13 @@ def shorten_url():
 @app.route('/<short_code>')
 def redirect_to_original(short_code):
     short_url = ShortURL.query.filter_by(short_code=short_code).first()
+    ip_address = ""
+    if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+        ip_address = request.environ['REMOTE_ADDR']
+    else:
+        ip_adddress_x = request.environ['HTTP_X_FORWARDED_FOR']
+        ip_address = ip_adddress_x.split(',')[0]
+
     if short_url:
         geolocation_data = fetch_and_save_geolocation(request.remote_addr, short_code)   
         # geolocation_data = fetch_and_save_geolocation("24.48.0.1", short_code)            
