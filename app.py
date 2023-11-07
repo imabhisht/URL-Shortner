@@ -202,8 +202,9 @@ def redirect_to_original(short_code):
         ip_adddress_x = request.environ['HTTP_X_FORWARDED_FOR']
         ip_address = ip_adddress_x.split(',')[0]
 
+
     if short_url:
-        geolocation_data = fetch_and_save_geolocation(request.remote_addr, short_code)   
+        geolocation_data = fetch_and_save_geolocation(ip_address, short_code)   
         # geolocation_data = fetch_and_save_geolocation("24.48.0.1", short_code)            
         return redirect(short_url.original_url)
     else:
