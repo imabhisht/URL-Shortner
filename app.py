@@ -6,7 +6,7 @@ import string
 import random
 import requests 
 from datetime import datetime
-
+from scraper import getFavicon
 
 load_dotenv()
 
@@ -204,6 +204,7 @@ def redirect_to_original(short_code):
 
 
     if short_url:
+        
         geolocation_data = fetch_and_save_geolocation(ip_address, short_code)   
         # geolocation_data = fetch_and_save_geolocation("24.48.0.1", short_code)            
         return redirect(short_url.original_url)
@@ -217,6 +218,8 @@ def generate_short_code():
 @app.route('/<short_code>/stats', methods=['GET'])
 def get_stats(short_code):
     short_url = ShortURL.query.filter_by(short_code=short_code).first()
+
+    print("This is Data: ",short_url)
 
     if short_url:
         geolocation_data = get_geolocation_data(short_code)
@@ -232,6 +235,13 @@ def get_stats(short_code):
 @app.route('/view/index')
 def view_index():
     return render_template('index.html')
+
+
+@app.route('/scrap-url', methods=['POST'])
+def api_scrap_url():
+    request_data = request.get_json()
+    url = request_data['url']
+    return jsonify(getFavicon(url))
 
 if __name__ == '__main__':
     app.run(debug=True)

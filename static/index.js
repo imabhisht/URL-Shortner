@@ -1,5 +1,5 @@
 const baseURL = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
-
+let spinner_element;
 function addRowsToTable(data) {
     const tableBody = document.getElementById('tableBody');
 
@@ -42,8 +42,53 @@ function addRowsToTable(data) {
 }
 
 
+
+function addRows_To_Table(data) {
+    const tableBody = document.getElementById('t-data');
+
+
+    data.forEach(async item => {
+
+        scrapped_info = await getURLInfo(item.original_url);
+        spinner_element.style.display = "none";
+
+        tableBody.innerHTML += `
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <td class="w-4 p-4">
+                <div class="flex items-center">
+                    <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                </div>
+            </td>
+            <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                <img class="w-10 h-10 rounded-full" src="${scrapped_info.favicon}" alt="Jese image">
+                <div class="pl-3">
+                    <div class="text-base font-semibold">${scrapped_info.title}</div>
+                    <div class="font-normal text-gray-500">${((item.original_url).length > 30) ? ((item.original_url).slice(0,30) + "..." ): item.original_url}</div>
+                </div>  
+            </th>
+            <td class="px-6 py-4">
+                <a href="${item.short_code}">${(item.short_code)}</a>
+            </td>
+            <td class="px-6 py-4">
+                <div class="flex items-center">
+                    <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div> Online
+                </div>
+            </td>
+            <td class="px-6 py-4">
+                <a href="stats?code=${item.short_code}" type="button" data-modal-target="editUserModal" data-modal-show="editUserModal" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit Link</a>
+            </td>
+        </tr>
+        `
+
+    })
+
+}
+
 async function fetchListOfAllData() {
     try {
+
+        
         const response = await fetch(`${baseURL}/get-all`);
         if (response.ok) {
             const data = await response.json();
@@ -63,41 +108,19 @@ async function fetchListOfAllData() {
 
 
 document.addEventListener("DOMContentLoaded", async function () {
-    // const apiData = [
-    //     {
-    //       "original_url": "https://www.google.com",
-    //       "short_code": "NcxJ9cu8"
-    //     },
-    //     {
-    //       "original_url": "https://chat.openai.com/c/731e07d3-12a5-4fab-8314-839b7a787d03",
-    //       "short_code": "3N3IOoym"
-    //     },
-    //     {
-    //       "original_url": "https://realpython.com/flask-javascript-frontend-for-rest-api/",
-    //       "short_code": "azWSoWwr"
-    //     }
-    //   ];
-
-    //   addRowsToTable(apiData);
-
+    spinner_element = document.getElementById('loading_spinner');
+    // spinner_element.style.display = "block";
     apiData = await fetchListOfAllData();
-    addRowsToTable(apiData);
+    console.log("This is Data",apiData)
+    addRows_To_Table(apiData);
 
 
     document.getElementById("shortenButton").addEventListener("click", function () {
-        // Get the URL entered by the user
         var url = document.getElementById("url").value;
-
-        // Call your JavaScript function with the entered URL
         shortenURL(url);
     });
 
-    // Define your JavaScript function to handle the URL
     async function shortenURL(url) {
-        // Add your URL shortening logic here
-        // For example, you can use AJAX to send the URL to your server for shortening
-        // You can also update the UI with the shortened URL or show an error message
-        // This example just alerts the entered URL
         alert("Entered URL: " + url);
 
         const apiUrl = `${baseURL}/shorten`;
@@ -127,3 +150,31 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     }
 });
+
+
+
+
+
+async function getURLInfo(url_to_scrap) {
+    try {
+      const response = await fetch(`${baseURL}/scrap-url`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Set the content type to JSON
+        },
+        body: JSON.stringify({
+            url: url_to_scrap,
+        }), // Convert the data to JSON format
+      });
+  
+      if (response.ok) {
+        const responseData = await response.json(); // Parse the response as JSON
+        console.log('Response:', responseData);
+        return responseData;
+      } else {
+        throw new Error('Request failed.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
