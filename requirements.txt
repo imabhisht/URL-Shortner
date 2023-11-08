@@ -5,3 +5,5 @@ Requests
 SQLAlchemy
 gunicorn
 pymysql
+bs4
+requests
