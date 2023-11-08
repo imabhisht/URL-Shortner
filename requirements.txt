@@ -7,3 +7,4 @@ gunicorn
 pymysql
 bs4
 requests
+lxml
